@@ -3,7 +3,7 @@
         <div class="dropdown2">
             <input type="text" v-bind:id="'faceInput' + face.id" class="nameInput" placeholder="Кто это?" required v-on:change="updateName" v-on:keyup.enter="inputSubmit()" v-on:focus="setHeight" />
             <div class="suggestionsField" v-bind:id="'sg' + face.id">
-                <span class="sgButton" v-for="(suggestion, index) in suggestions" v-on:click="suggest(suggestion, index)">{{ suggestion }}</span>
+                <span class="sgButton" v-for="(suggestion, index) in suggestions" v-on:click="suggest(suggestion, index)">{{ suggestion.avatar_name }}</span>
             </div>
         </div>
     </div>
@@ -21,7 +21,7 @@
                 el.style.width = '100px';
             }
             else {
-                el.style.width = String(pixelWidth(el.value, {size: 20, family: 'Calibri'}) + 20) + 'px';
+                el.style.width = String(pixelWidth(el.value, {size: 20, family: 'Roboto'}) + 30) + 'px';
             }
         }
         var e = 'keyup,keypress,focus,blur,change'.split(',');
@@ -35,6 +35,7 @@
         data() {
             return {
                 name: '',
+                suggestions: [],
             };
         },
         watch: {},
@@ -48,6 +49,13 @@
                 inp.style.color = "#CCC !important";
                 inp.style.backgroundColor = "rgba(0, 0, 0, 0.5) !important";
             }
+            var this_ = this;
+            axios.get('http://photoclo.ru:8000/api/faces/' + this.face.id + '/suggest/', { headers: {Authorization: "Token " + localStorage.token}, params: {query: ''}}).then(function (response) {
+                console.log('response', response);
+                this_.suggestions = response.data.avatar;
+            }).catch(function (error) {
+                console.log(error);
+            });
         },
 		methods: {
             getStyle() {
@@ -82,14 +90,14 @@
             },
             suggest(suggestion, index) {
                 var inp = document.getElementById('faceInput' + this.face.id);
-                inp.value = suggestion;
-                this.name = suggestion;
-                inp.style.width = String(pixelWidth(suggestion, {size: 20, family: 'Calibri'}) + 20) + 'px';
+                inp.value = suggestion.avatar_name;
+                this.name = suggestion.avatar_name;
+                inp.style.width = String(pixelWidth(suggestion.avatar_name, {size: 20, family: 'Roboto'}) + 20) + 'px';
                 this.inputSubmit();
             },
             setHeight() {
                 var dropdown = document.getElementById('sg' + this.face.id);
-                dropdown.style.height = String(Math.min(window.innerHeight - dropdown.getBoundingClientRect().top, 125)) + 'px';
+                dropdown.style.height = String(Math.min(window.innerHeight - dropdown.getBoundingClientRect().top, this.suggestions.length * 25)) + 'px';
             }
         },
 	}

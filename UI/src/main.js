@@ -17,6 +17,10 @@ Vue.use(Navbar);
 
 import { Button } from 'bootstrap-vue/es/components';
 
+import autoRotate from 'vue-jpeg-auto-rotation';
+
+Vue.use(autoRotate);
+
 Vue.use(Button);
 
 import 'bootstrap/dist/css/bootstrap.css';

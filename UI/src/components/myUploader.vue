@@ -210,6 +210,7 @@
                 }
             },
             submit: function(e){
+                this.$emit('start-upload');
                 e.preventDefault(); e.stopPropagation();
                 if(!this.onUploading){
                     if(this.max_batch > 1){

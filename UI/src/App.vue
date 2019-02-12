@@ -41,7 +41,7 @@
                         <myUploader ref="myUploader" v-on:closeModal="isModalShown = false;" url="http://photoclo.ru:8000/api/photos/"
                                     @upload-image-attempt="uploadAttempt();" @upload-image-finish="uploadFinish();"
                                     @upload-image-success='updateImagesOk();' @upload-image-failure='updateImagesFail();'
-                                    @set-files-num="setFilesNum" > </myUploader>
+                                    @set-files-num="setFilesNum"  @start-upload="showProgress"> </myUploader>
                     </b-modal>
 
                     <div v-if="isDiskSynchronized" v-on:click="goToYandexDisk" title="Диск уже подключен" v-b-tooltip.hover class="iconDiv">
@@ -54,10 +54,10 @@
                         <span class="iconText"> Яндекс.Диск </span>
                     </div>
 
-                    <b-nav-item-dropdown right text=""  class="mr-sm-2" id="dropUser" variant="link" no-caret>
-                        <b-dropdown-item href="#">Профиль</b-dropdown-item>
-                        <b-dropdown-item v-on:click="logout()">Выйти</b-dropdown-item>
-                    </b-nav-item-dropdown>
+                    <div class="iconDiv" v-on:click="logout" id="logoutDiv">
+                        <div><img src="https://i.ibb.co/nLqCDNy/logout-512.png" class="iconImg"></div>
+                        <span class="iconText"> Выйти</span>
+                    </div>
 
 
 
@@ -104,6 +104,9 @@
                 filesUploaded: 0,
                 filesToUpload: 0,
                 isDiskSynchronized: false,
+                // That's bullshit because of assync of JS:
+                hasJustStarted: false,
+                // That's bullshit because of assync of JS:
             }
         },
         components: {
@@ -179,16 +182,26 @@
                 this.updateToken();
                 this.resetUploader()
             },
+            showProgress() {
+                console.log("show progress")
+                this.onUploading = true;
+                this.hasJustStarted = true;
+            },
             uploadAttempt() {
                 this.onUploading = true;
             },
             uploadFinish() {
                 console.log("Finish upload")
-                this.onUploading = false;
-                this.filesUploaded = 0;
-                this.filesToUpload = 0;
+                if (this.hasJustStarted) {
+                    this.hasJustStarted = false
+                } else {
+                    this.onUploading = false;
+                    this.filesUploaded = 0;
+                    this.filesToUpload = 0;
+                }
             },
             setFilesNum(value) {
+                this.onUploading = true;
                 this.filesToUpload = value;
             },
             goToYandexDisk() {
@@ -276,18 +289,17 @@
     }
     .iconDiv {
         /*border: 1px solid grey;*/
-        padding-top: 5px;
-        padding-left: 5px;
-        padding-right: 5px;
-        padding-bottom: 2px;
         cursor: pointer;
         margin-top: 10px;
         margin-bottom: 10px;
-        margin-left: 25px;
-        margin-right: 15px;
+        margin-left: 5px;
+        margin-right: 30px;
         display: flex;
         flex-direction: row;
         text-align: center;
+    }
+    #logoutDiv {
+        margin-right: 10px !important;
     }
     .iconDiv:hover {
         background-color: rgba(58, 120, 222, 0.05) !important;
@@ -302,40 +314,25 @@
     .iconImg {
         width: 20px;
         height: 15px;
-        margin-left: 10px;
+        margin-left: 0px;
     }
-    #userButton {
-        height: auto;
-        background-color: red;
-        color: red;
-        margin-top: 0px;
-    }
-    #userImg {
-        width: 30px;
-        height: 35px;
-        margin-bottom: 0px;
+    .userImg {
+        width: 20px;
+        height: 20px;
+        margin-left: 5px;
+        margin-right: 3px;
     }
     #uploadModal {
         font-family: 'Roboto', sans-serif;
     }
-    #dropUser {
-        margin-left: 36px;
-        margin-top: 14px;
-        padding-top: 10px;
-        padding-right: 15px;
-        margin-right: 20px !important;
-        background-repeat:no-repeat;
-        opacity: 1;
-        background-image: url("https://i.ibb.co/sRkCGT4/Webp-net-resizeimage-7.png");
-    }
     .uploadProcessDiv {
-        margin-right: 20px;
+        margin-right: 30px;
         display: flex;
         flex-direction: column;
         text-align: center;
     }
     .uploadProcessSpan {
-        margin-top: 10px;
+        margin-top: 5px;
     }
     #dropUser:hover .dropdown-menu{
         margin-top: 0;

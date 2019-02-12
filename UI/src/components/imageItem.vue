@@ -3,11 +3,13 @@
 </template>
 
 <script>
-    
+    import AutoRotate from './AutoRotate';
+    import Vue from 'vue';
+    Vue.component('autoRotate', AutoRotate);
 	export default {
 		name: 'imageItem',
 		props: ['imageURL'],
-		methods: {}
+		methods: {},
 	}
 </script>
 
