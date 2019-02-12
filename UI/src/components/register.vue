@@ -195,15 +195,17 @@
         background-color: #FFFFFF;
         margin: auto;
         margin-top: 5vh;
-        min-height: 350px;
+        min-height: 450px;
         height: 80vh;
         padding: 20px;
-        font: 20px Calibri;
+        font-size: 20px;
+        font-family: 'Roboto', sans-serif;
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     }
 
     .input {
-        font: 20px Calibri;
+        font-size: 20px;
+        font-family: 'Roboto', sans-serif;
         border-left: 0px;
         border-right: 0px;
         border-top: 0px;
@@ -212,7 +214,8 @@
 
     .button {
         width: 75%;
-        font: 20px Calibri;
+        font-size: 20px;
+        font-family: 'Roboto', sans-serif;
         color: #FFFFFF;
         background-color: #FFF;
         border-radius: 2px;
@@ -271,57 +274,66 @@
         margin-top: 10px;
         text-align: left;
         font-size: 15px;
+        font-family: 'Roboto', sans-serif;
         color: #3A78DE;
-    }
-
-    #loginButton:focus {
-        outline: 1px;
     }
 
     input:focus {
         outline: none !important;
     }
+
     .inputFields {
         width: 100%;
         display: flex;
         align-items: center;
         flex-direction: column;
     }
+
     .user-input-wrp {
+        font-size: 17px;
+        font-family: 'Roboto', sans-serif;
         position: relative;
         width: 75%;
     }
+
     .user-input-wrp .input{
         width: 100%;
         outline: none;
         border:none;
         border-bottom: 1px solid #3A78DE;
     }
+
     .user-input-wrp .input:invalid {
         box-shadow: none !important;
         border-bottom: 1px solid red;
     }
+
     .user-input-wrp .input:focus{
         border-width: medium medium 2px;
     }
+
     .user-input-wrp .floating-label {
         position: absolute;
         pointer-events: none;
-        top: 18px;
+        top: 30px;
         left: 5px;
-        transition: 0.15s ease all;
+        transition: 0.2s ease all;
         color: #777;
     }
+
     .user-input-wrp input:focus ~ .floating-label,
     .user-input-wrp input:not(:focus):valid ~ .floating-label{
         top: 5px;
         left: 0px;
         font-size: 13px;
+        font-family: 'Roboto', sans-serif;
         opacity: 1;
         color: #000;
     }
+
     .error {
-        font: 13px Colibri;
+        font-size: 10px !important;
+        font-family: 'Roboto', sans-serif;
         width: 75%;
         color: red;
         text-align: left;

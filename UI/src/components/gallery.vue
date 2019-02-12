@@ -14,7 +14,7 @@
                 </div>
                 <div id="overIBS">
                     <div class="image-modal-content">
-                        <imageWBBItem id="imageBigShow" v-bind:faces="this.faces" v-bind:image="imagesBig[index]" v-bind:avatars="this.avatarsById"/>
+                        <imageWBBItem id="imageBigShow" v-bind:faces="this.faces" v-bind:image="imagesBig[index]" v-bind:avatars="this.avatarsById" />
                     </div>
                 </div>
                 <div class="carouselButton" id="nextButton" v-on:click="next()">
@@ -79,9 +79,7 @@
         },
         watch: {
             index(value) {
-                console.log("lel");
                 this.imagenowURL = '';
-                console.log("kek");
                 this.imagenowURL = this.images[value];
                 this.getFaces();
             },
@@ -263,7 +261,7 @@
 
     .imageModal {
         display: none; 
-        position: fixed; 
+        position: fixed;
         z-index: 1; 
         padding-top: 0px;
         left: 0;
@@ -304,6 +302,7 @@
         position: absolute;
         color: #999 !important; 
         font-size: 31px;
+        font-family: 'Roboto', sans-serif;
         transition: 0.3s;
     }
 
@@ -317,6 +316,7 @@
     #downloadImageButton {
         color: #AAA !important;
         font-size: 15px;
+        font-family: 'Roboto', sans-serif;
         margin: 5px;
     }
 
@@ -349,7 +349,8 @@
         overflow: visible;
         text-align: center;
         width: 100% !important;
-        font: 40px;
+        font-size: 40px;
+        font-family: 'Roboto', sans-serif;
         color: #CCC !important;
         background-color: rgba(0, 0, 0, 0) !important;
         height: 100% !important;
@@ -377,6 +378,8 @@
     .innerContent {
         width: 100%;
         height: 100%;
+        max-height: 100vh !important;
+        overflow: hidden;
         display: flex;
         text-align: center;
     }
@@ -387,6 +390,10 @@
         justify-content: space-around;
         width: auto;
         height: 100%;
-        max-height: 100vh;
+        max-height: 100vh !important;
+    }
+
+    #myModal {
+        max-height: 100vh !important;
     }
 </style>

@@ -16,8 +16,7 @@
         components: {
             bbButton
         },
-        mounted: function() {
-        },
+        mounted: function() {},
 		props: {
             image: {
                 type: Object,

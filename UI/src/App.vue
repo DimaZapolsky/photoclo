@@ -1,14 +1,15 @@
 
 <template>
-
     <div id="app">
         <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">-->
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 
-        <b-navbar class="navBar" style="height: 50px" v-if="authenticated" toggleable="md" type="light" variant="light">
+
+        <b-navbar v-if="authenticated" toggleable="md" type="light" variant="light">
 
             <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
 
-            <b-navbar-brand style="color: black; font-family: 'Lucida Console', serif; font-size: 30px !important;" href="photoclo.ru:8000">PHOTOCLO</b-navbar-brand>
+            <b-navbar-brand style="color: black; font-family: 'Roboto', sans-serif; font-size: 30px !important;" href="photoclo.ru:8000">PHOTOCLO</b-navbar-brand>
 
             <b-collapse is-nav id="nav_collapse">
 
@@ -16,34 +17,50 @@
 
                 <!-- Right aligned nav items -->
                 <b-navbar-nav class="ml-auto">
-
-
                     <!--     Search     -->
                     <!--<form class="form-inline md-form form-sm mt-0">-->
                     <!--<i class="fas fa-search" aria-hidden="true"></i>-->
                     <!--<input class="form-control form-control ml-3 w-75" type="text" placeholder="Поиск" aria-label="Search">-->
                     <!--</form>-->
+                    <!--<span> {{onUploading}}</span>-->
 
-                    <div v-on:click="startUpload" class="iconDiv">
+
+
+                    <div v-if="onUploading" class="uploadProcessDiv">
+                        <span class="uploadProcessSpan"> Идет загрузка:  </span>
+                        <b-progress :value="filesUploaded" :max="filesToUpload" class="mb-3"></b-progress>
+                    </div>
+
+                    <div v-if="!onUploading" v-on:click="startUpload" class="iconDiv">
                         <div><img src="https://i.ibb.co/vJs3zrs/icon.png"  class="iconImg"/></div>
                         <span class="iconText">Загрузка</span>
                     </div>
 
                     <!--<span> myUploader.data().toClose </span>-->
                     <b-modal id="uploadModal" ref="uploadModal" hide-footer=true @hide="isModalShown=false" title="Загрузка фотографий">
-                        <myUploader ref="myUploader" v-on:closeModal="isModalShown = false;" url="http://photoclo.ru:8000/api/photos/" @upload-image-success='updateImages();' @upload-image-failure='updateImages();'> </myUploader>
+                        <myUploader ref="myUploader" v-on:closeModal="isModalShown = false;" url="http://photoclo.ru:8000/api/photos/"
+                                    @upload-image-attempt="uploadAttempt();" @upload-image-finish="uploadFinish();"
+                                    @upload-image-success='updateImagesOk();' @upload-image-failure='updateImagesFail();'
+                                    @set-files-num="setFilesNum" > </myUploader>
                     </b-modal>
 
+                    <div v-if="isDiskSynchronized" v-on:click="goToYandexDisk" title="Диск уже подключен" v-b-tooltip.hover class="iconDiv">
+                        <div><img src="https://i.ibb.co/0cmbT5w/ya-disk.png" class="iconImg"></div>
+                        <span  class="iconText"> Яндекс.Диск </span>
+                    </div>
 
-                    <div v-on:click="goToYandexDisk" class="iconDiv">
+                    <div v-if="!isDiskSynchronized" v-on:click="goToYandexDisk" title="Подключить Яндекс.диск" v-b-tooltip.hover class="iconDiv">
                         <div><img src="https://i.ibb.co/0cmbT5w/ya-disk.png" class="iconImg"></div>
                         <span class="iconText"> Яндекс.Диск </span>
                     </div>
 
-                    <b-dropdown right text=""  class="mr-sm-2" id="dropUser" variant="link" no-caret>
+                    <b-nav-item-dropdown right text=""  class="mr-sm-2" id="dropUser" variant="link" no-caret>
                         <b-dropdown-item href="#">Профиль</b-dropdown-item>
                         <b-dropdown-item v-on:click="logout()">Выйти</b-dropdown-item>
-                    </b-dropdown>
+                    </b-nav-item-dropdown>
+
+
+
 
                     <!--<div class="iconDiv" id="userDiv">-->
                     <!--<img src="https://i.ibb.co/SDTzj5R/user-icon.png" class="iconImg" id="userImg"/>-->
@@ -83,6 +100,10 @@
                 authenticated: false,
                 token: undefined,
                 isModalShown: false,
+                onUploading: false,
+                filesUploaded: 0,
+                filesToUpload: 0,
+                isDiskSynchronized: false,
             }
         },
         components: {
@@ -100,7 +121,17 @@
             }
         },
         mounted() {
-
+            var this_ = this;
+            axios.get('http://photoclo.ru:8000/api/tokens/status/',{ headers: {Authorization: "Token " + String(localStorage.token)}}).then(function (response) {
+                if (!response.data.sync) {
+                    console.log("Set as false")
+                    this_.isDiskSynchronized = false;
+                } else {
+                    console.log("set as true")
+                    this_.isDiskSynchronized = true;
+                }
+                console.log(this_.isDiskSynchronized)
+            });
             if (localStorage.hasOwnProperty('token')) {
                 this.token = localStorage.token;
                 this.authenticated = true;
@@ -125,13 +156,18 @@
             },
             logout() {
                 var this_ = this;
-                axios.post('http://photoclo.ru:8000/api/sign_out/', {Authorization: "Token " + String(this.token)}).then(function () {
+                axios.post('http://photoclo.ru:8000/api/sign_out/', {Authorization: "Token " + String(localStorage.token)}).then(function () {
                     this_.authenticated = false;
                     this_.$router.replace({ name: "login" });
                     delete localStorage.token;
                 });
             },
-            updateImages() {
+            updateImagesOk() {
+                console.log("Increase files num")
+                this.filesUploaded += 1;
+                this.$refs.child.updateImages();
+            },
+            updateImagesFail() {
                 this.$refs.child.updateImages();
             },
             resetUploader() {
@@ -143,15 +179,24 @@
                 this.updateToken();
                 this.resetUploader()
             },
+            uploadAttempt() {
+                this.onUploading = true;
+            },
+            uploadFinish() {
+                console.log("Finish upload")
+                this.onUploading = false;
+                this.filesUploaded = 0;
+                this.filesToUpload = 0;
+            },
+            setFilesNum(value) {
+                this.filesToUpload = value;
+            },
             goToYandexDisk() {
-                axios.get('http://photoclo.ru:8000/api/tokens/code/',{ headers: {Authorization: "Token " +
-                    String(this.token)}}).then(function (response) {
-                    if (!response.data.sync) {
+                if (!this.isDiskSynchronized) {
+                    axios.get('http://photoclo.ru:8000/api/tokens/code/',{ headers: {Authorization: "Token " + String(this.token)}}).then(function (response) {
                         window.location.href = response.data.url;
-                    } else {
-                        console.log("Disk is already synchronized");
-                    }
-                });
+                    });
+                }
             }
         },
     }
@@ -159,13 +204,11 @@
 
 <style>
     body {
-        background-color: #CCC !important;
+        background-color: #EEEEEE !important;
     }
     h1 {
         padding: 0;
         margin-top: 0;
-    }
-    #app {
     }
 
     .active {
@@ -240,8 +283,8 @@
         cursor: pointer;
         margin-top: 10px;
         margin-bottom: 10px;
-        margin-left: 20px;
-        margin-right: 25px;
+        margin-left: 25px;
+        margin-right: 15px;
         display: flex;
         flex-direction: row;
         text-align: center;
@@ -251,7 +294,7 @@
     }
     .iconText {
         font-weight: 100;
-        font-family: 'Lucida Console', serif;
+        font-family: 'Roboto', sans-serif;
         font-size: 17px;
         margin-left: 10px;
         margin-right: 10px;
@@ -273,17 +316,29 @@
         margin-bottom: 0px;
     }
     #uploadModal {
-        font-family: 'Lucida Console', serif;
+        font-family: 'Roboto', sans-serif;
     }
     #dropUser {
-        margin-left: 20px;
+        margin-left: 36px;
         margin-top: 14px;
         padding-top: 10px;
+        padding-right: 15px;
         margin-right: 20px !important;
         background-repeat:no-repeat;
         opacity: 1;
-        width: 35px;
-        height: 35px;
         background-image: url("https://i.ibb.co/sRkCGT4/Webp-net-resizeimage-7.png");
+    }
+    .uploadProcessDiv {
+        margin-right: 20px;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+    }
+    .uploadProcessSpan {
+        margin-top: 10px;
+    }
+    #dropUser:hover .dropdown-menu{
+        margin-top: 0;
+        display: block;
     }
 </style>

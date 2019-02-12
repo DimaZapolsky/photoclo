@@ -31,9 +31,9 @@
                         required/>
                 <span class="floating-label">Пароль</span>
             </div>
-            <button class="loginPageButton" id="loginButton" form="login" type="submit"><span>Вход</span></button>
+            <button class="button" id="loginButton" form="login" type="submit"><span>Вход</span></button>
         </div>
-        <button class="loginPageButton" id="registerButton" form="login" type="button" v-on:click="toRegisterPage()">Еще нет аккаунта? Зарегистрируйтесь!</button>
+        <button class="button" id="registerButton" form="login" type="button" v-on:click="toRegisterPage()">Еще нет аккаунта? Зарегистрируйтесь!</button>
     </form>
 </template>
 
@@ -117,29 +117,33 @@
         height: 80vh;
         min-height: 350px;
         padding: 20px;
-        font: 20px Calibri;
+        font-size: 20px;
+        font-family: 'Roboto', sans-serif;
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     }
 
     .input {
-        font: 20px Calibri;
+        font-size: 20px;
+        font-family: 'Roboto', sans-serif;
         border-left: 0px;
         border-right: 0px;
         border-top: 0px;
         border-bottom: 1px solid #3A78DE;
     }
 
-    .loginPageButton {
+    .button {
         width: 75%;
-        font: 20px Calibri;
+        font-size: 20px;
+        font-family: 'Roboto', sans-serif;
         color: #FFFFFF;
+        background-color: #FFF;
         border-radius: 2px;
+        margin-top: 10px;
         padding: 4px;
         border: 0px;
         margin: 10px;
         cursor: pointer;
         outline: none !important;
-        background-color: #FFF;
     }
 
     button:hover {
@@ -151,6 +155,7 @@
     }
 
     #loginButton {
+        width: 75%;
         background-color: #3A78DE;
         color: white;
         box-shadow: 0.1em 0.1em 5px rgba(122,122,122,0.5);
@@ -173,20 +178,22 @@
         transition: 0.5s;
     }
 
-    #loginButton:focus .floating-label,
-    #loginButton:hover .floating-label {
+    #loginButton:focus span,
+    #loginButton:hover span {
         padding-right: 25px;
     }
 
-    #loginButton:focus .floating-label:after,
-    #loginButton:hover .floating-label:after {
+    #loginButton:focus span:after,
+    #loginButton:hover span:after {
         opacity: 1;
         right: 0;
     }
 
     #registerButton{
+        margin-top: 10px;
         text-align: left;
         font-size: 15px;
+        font-family: 'Roboto', sans-serif;
         color: #3A78DE;
     }
 
@@ -200,41 +207,52 @@
         align-items: center;
         flex-direction: column;
     }
+
     .user-input-wrp {
+        font-size: 17px;
+        font-family: 'Roboto', sans-serif;
         position: relative;
         width: 75%;
     }
+
     .user-input-wrp .input{
         width: 100%;
         outline: none;
         border:none;
         border-bottom: 1px solid #3A78DE;
     }
+
     .user-input-wrp .input:invalid {
         box-shadow: none !important;
         border-bottom: 1px solid red;
     }
+
     .user-input-wrp .input:focus{
         border-width: medium medium 2px;
     }
+
     .user-input-wrp .floating-label {
         position: absolute;
         pointer-events: none;
-        top: 18px;
+        top: 30px;
         left: 5px;
-        transition: 0.15s ease all;
+        transition: 0.2s ease all;
         color: #777;
     }
+
     .user-input-wrp input:focus ~ .floating-label,
     .user-input-wrp input:not(:focus):valid ~ .floating-label{
         top: 5px;
         left: 0px;
         font-size: 13px;
+        font-family: 'Roboto', sans-serif;
         opacity: 1;
         color: #000;
     }
+
     .error {
-        font: 13px Colibri;
+        font-size: 10px !important;
+        font-family: 'Roboto', sans-serif;
         width: 75%;
         color: red;
         text-align: left;

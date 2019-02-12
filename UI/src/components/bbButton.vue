@@ -1,6 +1,11 @@
 <template>
     <div class="dropdown mybbButton" v-bind:style="getStyle()">
-        <input type="text" v-bind:id="'faceInput' + face.id" class="nameInput" placeholder="Кто это?" required v-on:change="updateName" v-on:keyup.enter="inputSubmit()"  />
+        <div class="dropdown2">
+            <input type="text" v-bind:id="'faceInput' + face.id" class="nameInput" placeholder="Кто это?" required v-on:change="updateName" v-on:keyup.enter="inputSubmit()" v-on:focus="setHeight" />
+            <div class="suggestionsField" v-bind:id="'sg' + face.id">
+                <span class="sgButton" v-for="(suggestion, index) in suggestions" v-on:click="suggest(suggestion, index)">{{ suggestion }}</span>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -12,7 +17,12 @@
     function resizable (el, factor) {
         var int = Number(factor) || 7.7;
         function resize() {
-            el.style.width = String(Math.max(100, pixelWidth(el.value, {size: 20, family: 'Calibri'}) + 20)) + 'px';
+            if (el.value == '') {
+                el.style.width = '100px';
+            }
+            else {
+                el.style.width = String(pixelWidth(el.value, {size: 20, family: 'Calibri'}) + 20) + 'px';
+            }
         }
         var e = 'keyup,keypress,focus,blur,change'.split(',');
         for (var i in e) el.addEventListener(e[i],resize,false);
@@ -24,7 +34,7 @@
 		props: ['srcWidth', 'srcHeight', 'face', 'avatar'],
         data() {
             return {
-                name: '' 
+                name: '',
             };
         },
         watch: {},
@@ -58,6 +68,9 @@
                 this.name = event.target.value;
             },
             inputSubmit() {
+                if (this.name == '') {
+                    return;
+                }
                 var inp = document.getElementById('faceInput' + this.face.id);
                 inp.disabled = true;
                 var this_ = this;
@@ -66,6 +79,17 @@
                 }).catch(function (error) {
                     console.log(error);
                 });
+            },
+            suggest(suggestion, index) {
+                var inp = document.getElementById('faceInput' + this.face.id);
+                inp.value = suggestion;
+                this.name = suggestion;
+                inp.style.width = String(pixelWidth(suggestion, {size: 20, family: 'Calibri'}) + 20) + 'px';
+                this.inputSubmit();
+            },
+            setHeight() {
+                var dropdown = document.getElementById('sg' + this.face.id);
+                dropdown.style.height = String(Math.min(window.innerHeight - dropdown.getBoundingClientRect().top, 125)) + 'px';
             }
         },
 	}
@@ -84,6 +108,11 @@
         align-items: center;
     }
 
+    .dropdown2 {
+        top: 100%;
+        position: relative;
+    }
+
     .mybbButton {
         z-index: 3 !important;
     }
@@ -93,23 +122,47 @@
         margin-bottom: 3px !important;
     }
 
+    .suggestionsField {
+        display: none;
+        flex-direction: column;
+        position: relative;
+        overflow: auto;
+        height: 125px;
+        width: auto;
+        background-color: #FFF;
+    }
+
+    .sgButton {
+        z-index: 7;
+        text-align: left;
+        height: 25px;
+        border-top: 1px solid #3A78DE;
+    }
+
     .nameInput {
         z-index: 5 !important;
-        position: absolute;
         align-self: center;
         display: none;
-        font: 'Calibri';
+        font-family: 'Roboto', sans-serif;
         font-size: 20px;
         height: auto;
-        top: 100%;
         border: 2px solid white;
         border-radius: 2px;
         width: 100px;
         transition: width 0.05s;
         text-align: center;
+        outline: none !important;
     }
 
     .dropdown:hover .nameInput {
         display: block;
+    }
+
+    .suggestionsField:hover {
+        display: flex;
+    }
+
+    .nameInput:focus + .suggestionsField {
+        display: flex;
     }
 </style>
