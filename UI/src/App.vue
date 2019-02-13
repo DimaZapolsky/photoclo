@@ -121,7 +121,6 @@
         },
         watch: {
             isModalShown(value) {
-                console.log("I am in watcher")
                 if (value) {
                     this.$refs.uploadModal.show();
                 }
@@ -129,9 +128,21 @@
                     this.$refs.uploadModal.hide();
                 }
             },
+            onUploading(value) {
+                if (value) {
+                    window.onbeforeunload = function() {
+                        alert("Вы уверены что хотите выйти? Загрузка может прерваться!");
+                        return "Вы уверены что хотите выйти? Загрузка может прерваться!";
+                    };
+                }
+                else {
+                    window.onbeforeunload = null;
+                }
+            }
         },
         mounted() {
             var this_ = this;
+
             if (localStorage.hasOwnProperty('cnt')) {
                 this.cnt = localStorage.cnt;
             }
@@ -141,25 +152,19 @@
             }
             axios.get('http://photoclo.ru:8000/api/tokens/status/',{ headers: {Authorization: "Token " + String(localStorage.token)}}).then(function (response) {
                 if (!response.data.sync) {
-                    console.log("Set as false")
                     this_.isDiskSynchronized = false;
                 } else {
-                    console.log("set as true")
                     this_.isDiskSynchronized = true;
                 }
-                console.log(this_.isDiskSynchronized)
             });
             if (localStorage.hasOwnProperty('token')) {
                 this.token = localStorage.token;
                 this.authenticated = true;
             }
-            console.log(this.authenticated);
             if(!this.authenticated) {
-                console.log("lol");
                 this.$router.replace({ name: "login" });
             }
             else {
-                console.log("kek");
                 this.$router.replace({name: "secure"});
             }
         },
@@ -184,7 +189,6 @@
                 });
             },
             updateImagesOk() {
-                console.log("Increase files num")
                 this.filesUploaded += 1;
                 this.$refs.child.updateImages();
             },
@@ -195,13 +199,11 @@
                 this.$refs.myUploader.resetUploader();
             },
             startUpload() {
-                console.log("Start upload")
                 this.isModalShown=true;
                 this.updateToken();
                 this.resetUploader()
             },
             showProgress() {
-                console.log("show progress")
                 this.onUploading = true;
                 this.hasJustStarted = true;
             },
@@ -209,7 +211,6 @@
                 this.onUploading = true;
             },
             uploadFinish() {
-                console.log("Finish upload")
                 if (this.hasJustStarted) {
                     this.hasJustStarted = false
                 } else {
@@ -231,21 +232,18 @@
             },
             cntInc() {
                 this.cnt++;
-                console.log(this.cnt);
                 localStorage.cnt = this.cnt;
             },
             cntDec() {
                 this.cnt--;
-                console.log(this.cnt);
                 localStorage.cnt = this.cnt;
             },
             cntSet(value) {
                 this.cnt = Number(value);
-                console.log(this.cnt);
                 localStorage.cnt = this.cnt;
             },
-            updateSearch(value) {
-                this.search = value;
+            updateSearch(event) {
+                this.search = event.target.value;
             },
             submitSearch() {
                 this.$refs.child.search(this.search);

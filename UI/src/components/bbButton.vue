@@ -52,8 +52,6 @@
             var this_ = this;
             axios.get('http://photoclo.ru:8000/api/faces/' + this.face.id + '/suggest/', { headers: {Authorization: "Token " + localStorage.token}, params: {query: ''}}).then(function (response) {
                 this_.suggestions = response.data.avatar;
-                console.log('sg', this_.suggestions);
-                console.log('response', response);
                 this_.setHeight();
             }).catch(function (error) {
                 console.log(error);
@@ -100,7 +98,6 @@
             setHeight() {
                 var dropdown = document.getElementById('sg' + this.face.id);
                 dropdown.style.height = String(Math.min(window.innerHeight - dropdown.getBoundingClientRect().top, this.suggestions.length * 25)) + 'px';
-                console.log(dropdown.style.height);
             }
         }
 	}

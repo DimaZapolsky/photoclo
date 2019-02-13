@@ -184,7 +184,6 @@
                     this_.close();
                 }
                 axios.delete('http://photoclo.ru:8000/api/photos/' + id_ + '/', { headers: {Authorization: "Token " + localStorage.token}}).then(function (response) {
-                    console.log("deleted");
                 }).catch(function (error) {
                     console.log(error);
                 });

@@ -33,7 +33,6 @@
                     this_.images.push(response.data.photos[i]);
                 }
                 this_.$emit('cntSet', response.data.photos.length);
-                console.log(response);
             }).catch(function (error) {
                 console.log(error);
             });
@@ -41,7 +40,6 @@
                 for (var i = 0; i < response.data.photos.length; ++i) {
                     this_.imagesBig.push(response.data.photos[i]);
                 }
-                console.log(response);
             }).catch(function (error) {
                 console.log(error);
             });
@@ -60,7 +58,6 @@
                     this_.images = [];
                     for (var i = 0; i < response.data.photos.length; ++i) {
                         this_.images.push(response.data.photos[i]);
-                        console.log(this_.cnt);
                     }
                     this_.$emit('cntSet', response.data.photos.length);
                 }).catch(function (error) {
