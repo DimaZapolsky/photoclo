@@ -85,6 +85,34 @@
             },
             cntDec() {
                 this.$emit('cntDec');
+            },
+            search(value) {
+                var this_ = this;
+                axios.get('http://photoclo.ru:8000/api/filter/', { headers: {Authorization: "Token " + localStorage.token}, params: {size: "m", query: value}}).then(function (response) {
+                    this_.images = [];
+                    for (var i = 0; i < response.data.photos.length; ++i) {
+                        this_.images.push(response.data.photos[i]);
+                    }
+                    this_.$emit('cntSet', response.data.photos.length);
+                }).catch(function (error) {
+                    console.log(error);
+                });
+                axios.get('http://photoclo.ru:8000/api/filter/', { headers: {Authorization: "Token " + localStorage.token}, params: {size: "o", query: value}}).then(function (response) {
+                    this_.imagesBig = [];
+                    for (var i = 0; i < response.data.photos.length; ++i) {
+                        this_.imagesBig.push(response.data.photos[i]);
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                });
+                axios.get('http://photoclo.ru:8000/api/avatars/', { headers: {Authorization: "Token " + localStorage.token}}).then(function (response) {
+                    this_.avatars = [];
+                    for (var i = 0; i < response.data.avatars.length; ++i) {
+                        this_.avatars.push(response.data.avatars[i]);
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                });
             }
         }
     }

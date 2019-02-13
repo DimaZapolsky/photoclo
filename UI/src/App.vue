@@ -23,7 +23,7 @@
                     <!--</form>-->
 
                     <form style="display: flex !important; flex-direction:row-reverse !important; margin-right: 20px; margin-top: 5px !important;">
-                        <input style="margin-left: 10px !important;" class="form-control form-control ml-3" type="text" placeholder="Поиск" aria-label="Search">
+                        <input style="margin-left: 10px !important;" class="form-control form-control ml-3" type="text" placeholder="Поиск" aria-label="Search" v-on:change="updateSearch" v-on:keyup.enter="submitSearch" v-on:submit="submitSearch">
                         <i style="margin-top: 10px !important; margin-right: 0px !important; margin-left: 5px !important;" class="fas fa-search" aria-hidden="true"></i>
                     </form>
 
@@ -112,7 +112,8 @@
                 // That's bullshit because of assync of JS:
                 hasJustStarted: false,
                 // That's bullshit because of assync of JS:
-                cnt: 0
+                cnt: 0,
+                search: ''
             }
         },
         components: {
@@ -242,6 +243,12 @@
                 this.cnt = Number(value);
                 console.log(this.cnt);
                 localStorage.cnt = this.cnt;
+            },
+            updateSearch(value) {
+                this.search = value;
+            },
+            submitSearch() {
+                this.$refs.child.search(this.search);
             }
         },
     }
