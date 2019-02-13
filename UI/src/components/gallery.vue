@@ -34,8 +34,8 @@
 
     var download = function (filename) {
         var a = document.createElement("a");
-        a.href = '';
-        a.setAttribute("download", filename);
+        a.href = filename;
+        a.setAttribute("download", '');
         var b = document.createEvent("MouseEvents");
         b.initEvent("click", false, true);
         a.dispatchEvent(b);
@@ -121,7 +121,7 @@
                         sum += Math.ceil(this.images[j].width * 200 / this.images[j].height) + margin;
                         ++j;
                     }
-                    var h1 = Math.floor(200 * (w - (j - i) * margin) / (sum - (j - i) * margin));
+                    var h1 = Math.floor(199 * (w - (j - i) * margin) / (sum - (j - i) * margin));
                     if (j == this.images.length) {
                         if (h1 < 250) {
                             for (var k = i; k < j; ++k) {
@@ -138,7 +138,7 @@
                     else {
                         var sum2 = sum;
                         sum2 += Math.ceil(this.images[j].width * 200 / this.images[j].height) + margin;
-                        var h2 = Math.floor(200 * (w - (j - i + 1) * margin) / (sum2 - (j - i + 1) * margin));
+                        var h2 = Math.floor(199 * (w - (j - i + 1) * margin) / (sum2 - (j - i + 1) * margin));
                         if (Math.abs(h2 / 200 - 1) < Math.abs(h1 / 200 - 1)) {
                             for (var k = i; k <= j; ++k) {
                                 st.push('height: ' + h2 + 'px !important;');
@@ -196,7 +196,7 @@
                         download2(response.data.url);
                     }
                     else {
-                        download('http://photoclo.ru:8000' + url);
+                        download(url);
                     }
                 }).catch(function (error) {
                     console.log(error);
