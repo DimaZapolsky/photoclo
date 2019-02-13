@@ -76,8 +76,12 @@
             </b-collapse>
         </b-navbar>
         
-        <span v-if="cnt == '0' && authenticated">GG</span>
-        <router-view @authenticated="setAuthenticated" ref="child" v-bind:cnt="cnt" @cntInc="cntInc()" @cntDec="cntDec()" @cntSet="cntSet"/>
+        <div v-if="cnt == '0' && authenticated" class="greeting">
+            <div style="margin-top: 100px"><img src="https://i.ibb.co/z8dkRpH/laptop.png" class="greetingImg"></div>
+            <span style="margin-top: 30px; font-size: 32px !important;" class="greetingText"> Готовы добавить фотографии?</span>
+            <span style="margin-top: 10px" class="greetingText">  Чтобы загрузить фото, нажмите на кнопку "загрузка"</span>
+        </div>
+<router-view @authenticated="setAuthenticated" ref="child" v-bind:cnt="cnt" @cntInc="cntInc()" @cntDec="cntDec()" @cntSet="cntSet"/>
 
     </div>
 </template>
@@ -359,5 +363,21 @@
     .searchForm:hover,
     .searchForm:focus {
         background-color: rgba(0, 0, 0, 0) !important;
+    }
+
+    .greeting {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .greetingImg {
+        width: 40%;
+    }
+
+    .greetingText {
+        font-weight: 100;
+        font-family: 'Roboto', sans-serif;
+        font-size: 19px;
     }
 </style>
