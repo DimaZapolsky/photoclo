@@ -172,6 +172,7 @@
                 if (this_.index == null) {
                     return;
                 }
+                this_.$emit('cntDec');
                 var id_ = this_.images[this_.index].id;
                 this_.images.splice(this_.index, 1);
                 this_.imagesBig.splice(this_.index, 1);

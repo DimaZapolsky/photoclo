@@ -1,9 +1,8 @@
-
 <template>
     <div id="app">
         <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">-->
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-
+        <!--<span> {{localStorage.imagasNum}} </span>-->
 
         <b-navbar v-if="authenticated" toggleable="md" type="light" variant="light" class="navBar">
 
@@ -17,13 +16,16 @@
 
                 <!-- Right aligned nav items -->
                 <b-navbar-nav class="ml-auto">
-                    <!--     Search     -->
-                    <!--<form class="form-inline md-form form-sm mt-0">-->
-                    <!--<i class="fas fa-search" aria-hidden="true"></i>-->
-                    <!--<input class="form-control form-control ml-3 w-75" type="text" placeholder="Поиск" aria-label="Search">-->
+                    <!--Search     -->
+                    <!--<form style="display: flex !important; flex-direction:row-reverse !important; text-align: center !important;" class="form-inline md-form form-sm mt-0">-->
+                        <!--<input style="width: 80% !important; margin-left: 10px !important;" class="form-control form-control ml-3 w-100" type="text" placeholder="Поиск" aria-label="Search">-->
+                        <!--<i style="margin-left: 0px !important;" class="fas fa-search" aria-hidden="true"></i>-->
                     <!--</form>-->
-                    <!--<span> {{onUploading}}</span>-->
 
+                    <form style="display: flex !important; flex-direction:row-reverse !important; margin-right: 20px; margin-top: 5px !important;">
+                        <input style="margin-left: 10px !important;" class="form-control form-control ml-3" type="text" placeholder="Поиск" aria-label="Search">
+                        <i style="margin-top: 10px !important; margin-right: 0px !important; margin-left: 5px !important;" class="fas fa-search" aria-hidden="true"></i>
+                    </form>
 
 
                     <div v-if="onUploading" class="uploadProcessDiv">
@@ -73,7 +75,10 @@
 
             </b-collapse>
         </b-navbar>
-        <router-view @authenticated="setAuthenticated" ref="child" />
+        
+        <span v-if="cnt == '0' && authenticated">GG</span>
+        <router-view @authenticated="setAuthenticated" ref="child" v-bind:cnt="cnt" @cntInc="cntInc()" @cntDec="cntDec()" @cntSet="cntSet"/>
+
     </div>
 </template>
 
@@ -107,6 +112,7 @@
                 // That's bullshit because of assync of JS:
                 hasJustStarted: false,
                 // That's bullshit because of assync of JS:
+                cnt: 0
             }
         },
         components: {
@@ -121,10 +127,17 @@
                 else {
                     this.$refs.uploadModal.hide();
                 }
-            }
+            },
         },
         mounted() {
             var this_ = this;
+            if (localStorage.hasOwnProperty('cnt')) {
+                this.cnt = localStorage.cnt;
+            }
+            else {
+                this.cnt = 0;
+                localStorage.cnt = 0;
+            }
             axios.get('http://photoclo.ru:8000/api/tokens/status/',{ headers: {Authorization: "Token " + String(localStorage.token)}}).then(function (response) {
                 if (!response.data.sync) {
                     console.log("Set as false")
@@ -149,7 +162,11 @@
                 this.$router.replace({name: "secure"});
             }
         },
-
+        computed: {
+            cnt: function () {
+                return localStorage.cnt;
+            }
+        },
         methods: {
             updateToken () {
                 document.getElementsByClassName('myUploadBox')[0].__vue__.$props.my_header = {Authorization: "Token " + localStorage.token};
@@ -210,6 +227,21 @@
                         window.location.href = response.data.url;
                     });
                 }
+            },
+            cntInc() {
+                this.cnt++;
+                console.log(this.cnt);
+                localStorage.cnt = this.cnt;
+            },
+            cntDec() {
+                this.cnt--;
+                console.log(this.cnt);
+                localStorage.cnt = this.cnt;
+            },
+            cntSet(value) {
+                this.cnt = Number(value);
+                console.log(this.cnt);
+                localStorage.cnt = this.cnt;
             }
         },
     }
@@ -237,51 +269,12 @@
         background-color: #ccc;
     }
 
-    .searchbar{
-        margin: auto;
-        height: 100px;
-        background-color: #353b48;
-        border-radius: 30px;
-        padding: 10px;
-    }
-
-    .search_input{
-        color: white;
-        border: 0;
-        outline: 0;
-        background: none;
-        width: 0;
-        line-height: 40px;
-        transition: width 0.4s linear;
-    }
-
-    .searchbar:hover > .search_input{
-        padding: 0 10px;
-        width: 200px;
-        transition: width 0.4s linear;
-    }
-
-    .searchbar:hover > .search_icon{
-        background: white;
-        color: #e74c3c;
-    }
-
     .navBar {
         border-bottom: 2px solid #3A78DE;
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     }
 
-    .search_icon{
-        height: 40px;
-        width: 40px;
-        float: right;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-radius: 50%;
-        color:white;
-    }
-
+    
     #userImg {
         padding-bottom: 8px;
         height: 45px;
@@ -343,9 +336,23 @@
     .uploadProcessSpan {
         margin-top: 5px;
     }
-    
+
     #dropUser:hover .dropdown-menu{
         margin-top: 0;
         display: block;
+    }
+
+    .searchForm {
+    }
+
+    .searchField {
+        width: 120vw !important;
+        margin-right: 0px !important;
+        margin-left: 30px !important;
+    }
+
+    .searchForm:hover,
+    .searchForm:focus {
+        background-color: rgba(0, 0, 0, 0) !important;
     }
 </style>

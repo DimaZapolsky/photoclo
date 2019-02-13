@@ -1,5 +1,5 @@
 <template>
-    <gallery v-bind:images="images" v-bind:imagesBig="imagesBig" v-bind:avatars="avatars" />
+    <gallery v-bind:images="images" v-bind:imagesBig="imagesBig" v-bind:avatars="avatars" v-bind:cnt="cnt" @cntDec="cntDec()"/>
 </template>
 
 <script>
@@ -16,12 +16,14 @@
             imageItem
         },
         name: 'Secure',
+        props: ['cnt'],
         data() {
             return {
                 images: [],
                 imagesBig: [],
                 avatars: [],
-                index: null
+                index: null,
+                cnt: 0
             }
         },
         mounted() {
@@ -30,6 +32,7 @@
                 for (var i = 0; i < response.data.photos.length; ++i) {
                     this_.images.push(response.data.photos[i]);
                 }
+                this_.$emit('cntSet', response.data.photos.length);
                 console.log(response);
             }).catch(function (error) {
                 console.log(error);
@@ -57,7 +60,9 @@
                     this_.images = [];
                     for (var i = 0; i < response.data.photos.length; ++i) {
                         this_.images.push(response.data.photos[i]);
+                        console.log(this_.cnt);
                     }
+                    this_.$emit('cntSet', response.data.photos.length);
                 }).catch(function (error) {
                     console.log(error);
                 });
@@ -77,6 +82,9 @@
                 }).catch(function (error) {
                     console.log(error);
                 });
+            },
+            cntDec() {
+                this.$emit('cntDec');
             }
         }
     }
