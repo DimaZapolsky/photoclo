@@ -1,7 +1,7 @@
 <template>
     <div class="dropdown mybbButton" v-bind:style="getStyle()">
         <div class="dropdown2">
-            <input type="text" v-bind:id="'faceInput' + face.id" class="nameInput" placeholder="Кто это?" required v-on:change="updateName" v-on:keyup.enter="inputSubmit()" v-on:focus="setHeight" />
+            <input type="text" v-bind:id="'faceInput' + face.id" class="nameInput" placeholder="Кто это?" required v-on:change="updateName" v-on:keyup.enter="inputSubmit()" />
             <div class="suggestionsField" v-bind:id="'sg' + face.id">
                 <span class="sgButton" v-for="(suggestion, index) in suggestions" v-on:click="suggest(suggestion, index)">{{ suggestion.avatar_name }}</span>
             </div>
@@ -41,18 +41,20 @@
         watch: {},
         mounted: function () {
             resizable(document.getElementById('faceInput' + String(this.face.id)), 13);
-            if (this.avatar.name != "New Avatar") {
+            if (this.avatar.name != "New Avatar" && this.avatar.name != undefined && this.avatar.name != null) {
                 var inp = document.getElementById('faceInput' + this.face.id);
                 inp.value = this.avatar.name;
                 inp.disabled = true;
-                inp.style.width = String(pixelWidth(inp.value, {size: 20}) + 10) + 'px';
+                inp.style.width = String(pixelWidth(inp.value, {size: 20, family: 'Roboto'}) + 30) + 'px';
                 inp.style.color = "#CCC !important";
                 inp.style.backgroundColor = "rgba(0, 0, 0, 0.5) !important";
             }
             var this_ = this;
             axios.get('http://photoclo.ru:8000/api/faces/' + this.face.id + '/suggest/', { headers: {Authorization: "Token " + localStorage.token}, params: {query: ''}}).then(function (response) {
-                console.log('response', response);
                 this_.suggestions = response.data.avatar;
+                console.log('sg', this_.suggestions);
+                console.log('response', response);
+                this_.setHeight();
             }).catch(function (error) {
                 console.log(error);
             });
@@ -98,8 +100,9 @@
             setHeight() {
                 var dropdown = document.getElementById('sg' + this.face.id);
                 dropdown.style.height = String(Math.min(window.innerHeight - dropdown.getBoundingClientRect().top, this.suggestions.length * 25)) + 'px';
+                console.log(dropdown.style.height);
             }
-        },
+        }
 	}
 </script>
 

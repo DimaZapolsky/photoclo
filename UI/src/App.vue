@@ -5,7 +5,7 @@
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 
 
-        <b-navbar v-if="authenticated" toggleable="md" type="light" variant="light">
+        <b-navbar v-if="authenticated" toggleable="md" type="light" variant="light" class="navBar">
 
             <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
 
@@ -265,13 +265,12 @@
         background: white;
         color: #e74c3c;
     }
-    .navBar {
-        height: 55px;
-        background-color: #F8F8F8;
-        border-color: #E7E7E7;
-        border-bottom: 2px solid lightskyblue;
 
+    .navBar {
+        border-bottom: 2px solid #3A78DE;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     }
+
     .search_icon{
         height: 40px;
         width: 40px;
@@ -282,11 +281,13 @@
         border-radius: 50%;
         color:white;
     }
+
     #userImg {
         padding-bottom: 8px;
         height: 45px;
         width: auto;
     }
+
     .iconDiv {
         /*border: 1px solid grey;*/
         cursor: pointer;
@@ -298,12 +299,15 @@
         flex-direction: row;
         text-align: center;
     }
+
     #logoutDiv {
         margin-right: 10px !important;
     }
+
     .iconDiv:hover {
         background-color: rgba(58, 120, 222, 0.05) !important;
     }
+
     .iconText {
         font-weight: 100;
         font-family: 'Roboto', sans-serif;
@@ -311,29 +315,35 @@
         margin-left: 10px;
         margin-right: 10px;
     }
+
     .iconImg {
         width: 20px;
         height: 15px;
         margin-left: 0px;
     }
+
     .userImg {
         width: 20px;
         height: 20px;
         margin-left: 5px;
         margin-right: 3px;
     }
+
     #uploadModal {
         font-family: 'Roboto', sans-serif;
     }
+
     .uploadProcessDiv {
         margin-right: 30px;
         display: flex;
         flex-direction: column;
         text-align: center;
     }
+
     .uploadProcessSpan {
         margin-top: 5px;
     }
+    
     #dropUser:hover .dropdown-menu{
         margin-top: 0;
         display: block;

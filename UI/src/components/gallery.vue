@@ -42,6 +42,15 @@
         return false;
     }
 
+    var download2 = function (filename) {
+        var a = document.createElement("a");
+        a.href = filename;
+        var b = document.createEvent("MouseEvents");
+        b.initEvent("click", false, true);
+        a.dispatchEvent(b);
+        return false;
+    }
+
     export default {
         name: 'gallery',
         components: {
@@ -101,17 +110,18 @@
                 return avatarsById;
             },
             styles: function() {
+                var margin = 2;
                 this.recompute;
                 var st = [];
                 var w = window.innerWidth - 10;
                 for (var i = 0; i < this.images.length; ++i) {
                     var j = i;
                     var sum = 0;
-                    while (j < this.images.length && (j == i || sum + Math.ceil(this.images[j].width * 200 / this.images[j].height) + 10 <= w)) {
-                        sum += Math.ceil(this.images[j].width * 200 / this.images[j].height) + 10;
+                    while (j < this.images.length && (j == i || sum + Math.ceil(this.images[j].width * 200 / this.images[j].height) + margin <= w)) {
+                        sum += Math.ceil(this.images[j].width * 200 / this.images[j].height) + margin;
                         ++j;
                     }
-                    var h1 = Math.floor(195 * (w - (j - i) * 10) / (sum - (j - i) * 10));
+                    var h1 = Math.floor(200 * (w - (j - i) * margin) / (sum - (j - i) * margin));
                     if (j == this.images.length) {
                         if (h1 < 250) {
                             for (var k = i; k < j; ++k) {
@@ -127,8 +137,8 @@
                     }
                     else {
                         var sum2 = sum;
-                        sum2 += Math.ceil(this.images[j].width * 200 / this.images[j].height) + 10;
-                        var h2 = Math.floor(195 * (w - (j - i + 1) * 10) / (sum2 - (j - i + 1) * 10));
+                        sum2 += Math.ceil(this.images[j].width * 200 / this.images[j].height) + margin;
+                        var h2 = Math.floor(200 * (w - (j - i + 1) * margin) / (sum2 - (j - i + 1) * margin));
                         if (Math.abs(h2 / 200 - 1) < Math.abs(h1 / 200 - 1)) {
                             for (var k = i; k <= j; ++k) {
                                 st.push('height: ' + h2 + 'px !important;');
@@ -182,7 +192,12 @@
             span3.onclick = function () {
                 axios.get('http://photoclo.ru:8000/api/photos/' + this_.images[this_.index].id + '/download/', { headers: {Authorization: "Token " + localStorage.token}}).then(function (response) {
                     var url = response.data.url;
-                    download('http://photoclo.ru:8000' + url);
+                    if (response.data.type == "Yandex") {
+                        download2(response.data.url);
+                    }
+                    else {
+                        download('http://photoclo.ru:8000' + url);
+                    }
                 }).catch(function (error) {
                     console.log(error);
                 });
