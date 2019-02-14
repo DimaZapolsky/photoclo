@@ -1,5 +1,5 @@
 <template>
-    <div class="dropdown mybbButton" v-bind:style="getStyle()">
+    <div class="dropdown mybbButton" v-on:click="" v-bind:style="getStyle()">
         <div class="dropdown2">
             <input type="text" v-bind:id="'faceInput' + face.id" class="nameInput" placeholder="Кто это?" required v-on:change="updateName" v-on:keyup.enter="inputSubmit()" />
             <div class="suggestionsField" v-bind:id="'sg' + face.id">
