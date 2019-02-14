@@ -83,6 +83,10 @@
                 this.$emit('cntDec');
             },
             search(value) {
+                if (value == '') {
+                    this.updateImages();
+                    return;
+                }
                 var this_ = this;
                 axios.get('http://photoclo.ru:8000/api/filter/', { headers: {Authorization: "Token " + localStorage.token}, params: {size: "m", query: value}}).then(function (response) {
                     this_.images = [];

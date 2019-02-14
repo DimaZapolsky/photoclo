@@ -2,7 +2,7 @@
     <div class="gallery">
 
         <div v-for="(imagess, index1) in imageRows" style="display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: space-between; width: 100%;">
-            <imageItem v-for="(image, index2) in imagess" v-on:click.native='clicked(index)' v-bind:key="image.id" v-bind:imageURL="image.url" v-bind:style="styles[index1][index2]"/>
+            <imageItem v-for="(image, index2) in imagess" v-on:click.native='clicked(index1, index2)' v-bind:key="image.id" v-bind:imageURL="image.url" v-bind:style="styles[index1][index2]"/>
         </div>
 
         <div id="myModal" class="imageModal">
@@ -263,8 +263,12 @@
             }
         },
         methods: {
-            clicked(index) {
-                this.index = index;
+            clicked(index1, index2) {
+                var id = index2;
+                for (var j = 0; j < index1; ++j) {
+                    id += this.imageRows[j].length;
+                }
+                this.index = id;
                 var modal = document.getElementById('myModal');
                 modal.style.display = "flex";
             },
