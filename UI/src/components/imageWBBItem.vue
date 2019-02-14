@@ -2,7 +2,7 @@
     <div id="id1">
     	<div class="myContainer">
         	<img id="image-WBB-Item" v-bind:src="'http://photoclo.ru:8000' + image.url" alt="" />
-            <bbButton class="btn" v-for="(face, index) in faces" v-bind:key="'faceInput' + face.id" v-bind:face="face" v-bind:srcHeight="image.height" v-bind:srcWidth="image.width" v-bind:avatar="avatars[face.avatar]"/>
+            <bbButton ref="child" class="btn" v-for="(face, index) in faces" v-bind:key="'faceInput' + face.id" v-bind:face="face" v-bind:srcHeight="image.height" v-bind:srcWidth="image.width" v-bind:avatar="avatars[face.avatar]"/>
         </div>
     </div>
 </template>

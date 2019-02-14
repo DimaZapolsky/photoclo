@@ -23,7 +23,6 @@
                 imagesBig: [],
                 avatars: [],
                 index: null,
-                cnt: 0
             }
         },
         mounted() {

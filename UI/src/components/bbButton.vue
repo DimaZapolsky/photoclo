@@ -98,6 +98,9 @@
             setHeight() {
                 var dropdown = document.getElementById('sg' + this.face.id);
                 dropdown.style.height = String(Math.min(window.innerHeight - dropdown.getBoundingClientRect().top, this.suggestions.length * 25)) + 'px';
+            },
+            updateSuggestions() {
+
             }
         }
 	}
@@ -135,7 +138,7 @@
         flex-direction: column;
         position: relative;
         overflow: auto;
-        height: 125px;
+        height: 0px;
         width: auto;
         background-color: #FFF;
     }
@@ -162,7 +165,8 @@
         outline: none !important;
     }
 
-    .dropdown:hover .nameInput {
+    .dropdown:hover .nameInput,
+    .dropdown:focus .nameInput {
         display: block;
     }
 

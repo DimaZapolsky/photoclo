@@ -106,6 +106,7 @@
                             this.passwords_are_equal = false;
                         } else {
                             axios.post('http://photoclo.ru:8000/api/sign_up/', {username: this.input.username, password: this.input.password, email: this.input.email}).then(function (response) {
+                                localStorage.clear();
                                 localStorage.token = response.data.token;
                                 this_.$emit("authenticated", true);
                                 this_.$router.replace({ name: "secure" });

@@ -1,6 +1,9 @@
 <template>
     <div class="gallery">
-        <imageItem v-for="(image, index) in images" v-on:click.native='clicked(index)' v-bind:key="image.id" v-bind:imageURL="image.url" v-bind:style="styles[index]"/>
+
+        <div v-for="(imagess, index1) in imageRows" style="display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: space-between; width: 100%;">
+            <imageItem v-for="(image, index2) in imagess" v-on:click.native='clicked(index)' v-bind:key="image.id" v-bind:imageURL="image.url" v-bind:style="styles[index1][index2]"/>
+        </div>
 
         <div id="myModal" class="imageModal">
             <span class="buttonCarousel" id="closeImageButton">&times;</span>
@@ -14,7 +17,7 @@
                 </div>
                 <div id="overIBS">
                     <div class="image-modal-content">
-                        <imageWBBItem id="imageBigShow" v-bind:faces="this.faces" v-bind:image="imagesBig[index]" v-bind:avatars="this.avatarsById" />
+                        <imageWBBItem ref="child" id="imageBigShow" v-bind:faces="this.faces" v-bind:image="imagesBig[index]" v-bind:avatars="this.avatarsById" />
                     </div>
                 </div>
                 <div class="carouselButton" id="nextButton" v-on:click="next()">
@@ -91,11 +94,15 @@
                 this.imagenowURL = '';
                 this.imagenowURL = this.images[value];
                 this.getFaces();
+                this.$refs.child.$refs.child.updateSuggestions();
             },
         },
         created: function () {
             document.onkeydown = this.onkeydown;
             window.addEventListener('resize', this.updateStyles);
+            this.updateStyles();
+        },
+        mounted: function () {
             this.updateStyles();
         },
         destroyed() {
@@ -111,10 +118,13 @@
             },
             styles: function() {
                 var margin = 2;
+                this.images;
                 this.recompute;
                 var st = [];
                 var w = window.innerWidth - 10;
                 for (var i = 0; i < this.images.length; ++i) {
+                    var sz = st.length;
+                    st.push([]);
                     var j = i;
                     var sum = 0;
                     while (j < this.images.length && (j == i || sum + Math.ceil(this.images[j].width * 200 / this.images[j].height) + margin <= w)) {
@@ -125,14 +135,14 @@
                     if (j == this.images.length) {
                         if (h1 < 250) {
                             for (var k = i; k < j; ++k) {
-                                st.push('height: ' + h1 + 'px !important;');
+                                st[sz].push('height: ' + h1 + 'px !important;');
                             }
                         }
                         else {
                             for (var k = i; k < j - 1; ++k) {
-                                st.push('height: ' + 200 + 'px !important;');
+                                st[sz].push('height: ' + 200 + 'px !important;');
                             }
-                            st.push('height: 200px !important; margin-right: auto !important; margin-left: 5px;');
+                            st[sz].push('height: 200px !important; margin-right: auto !important; margin-left: 5px;');
                         }
                     }
                     else {
@@ -141,13 +151,13 @@
                         var h2 = Math.floor(199 * (w - (j - i + 1) * margin) / (sum2 - (j - i + 1) * margin));
                         if (Math.abs(h2 / 200 - 1) < Math.abs(h1 / 200 - 1)) {
                             for (var k = i; k <= j; ++k) {
-                                st.push('height: ' + h2 + 'px !important;');
+                                st[sz].push('height: ' + h2 + 'px !important;');
                             }
                             ++j;
                         }
                         else {
                             for (var k = i; k < j; ++k) {
-                                st.push('height: ' + h1 + 'px !important;');
+                                st[sz].push('height: ' + h1 + 'px !important;');
                             }
                         }
                     }
@@ -155,6 +165,55 @@
                 }
                 return st;
             },
+            imageRows: function () {
+                var margin = 2;
+                this.images;
+                this.recompute;
+                var ir = [];
+                var w = window.innerWidth - 10;
+                for (var i = 0; i < this.images.length; ++i) {
+                    var sz = ir.length;
+                    ir.push([]);
+                    var j = i;
+                    var sum = 0;
+                    while (j < this.images.length && (j == i || sum + Math.ceil(this.images[j].width * 200 / this.images[j].height) + margin <= w)) {
+                        sum += Math.ceil(this.images[j].width * 200 / this.images[j].height) + margin;
+                        ++j;
+                    }
+                    var h1 = Math.floor(199 * (w - (j - i) * margin) / (sum - (j - i) * margin));
+                    if (j == this.images.length) {
+                        if (h1 < 250) {
+                            for (var k = i; k < j; ++k) {
+                                ir[sz].push(this.images[k]);
+                            }
+                        }
+                        else {
+                            for (var k = i; k < j - 1; ++k) {
+                                ir[sz].push(this.images[k]);
+                            }
+                            ir[sz].push(this.images[j - 1]);
+                        }
+                    }
+                    else {
+                        var sum2 = sum;
+                        sum2 += Math.ceil(this.images[j].width * 200 / this.images[j].height) + margin;
+                        var h2 = Math.floor(199 * (w - (j - i + 1) * margin) / (sum2 - (j - i + 1) * margin));
+                        if (Math.abs(h2 / 200 - 1) < Math.abs(h1 / 200 - 1)) {
+                            for (var k = i; k <= j; ++k) {
+                                ir[sz].push(this.images[k]);
+                            }
+                            ++j;
+                        }
+                        else {
+                            for (var k = i; k < j; ++k) {
+                                ir[sz].push(this.images[k]);
+                            }
+                        }
+                    }
+                    i = j - 1;
+                }
+                return ir;
+            }
         },
         mounted: function () {
             var modal = document.getElementById('myModal');
@@ -268,9 +327,7 @@
 <style>
     .gallery {
         display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-between;
+        flex-direction: column;
         margin: 5px;
     }
 

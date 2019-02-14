@@ -71,6 +71,7 @@
                     <!--<b-dropdown-item v-on:click="logout()">Выйти</b-dropdown-item>-->
                     <!--</b-dropdown>-->
                     <!--</div>-->
+
                 </b-navbar-nav>
 
             </b-collapse>
@@ -170,11 +171,6 @@
             }
             else {
                 this.$router.replace({name: "secure"});
-            }
-        },
-        computed: {
-            cnt: function () {
-                return localStorage.cnt;
             }
         },
         methods: {
